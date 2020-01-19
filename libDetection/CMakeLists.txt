@@ -1,4 +1,5 @@
 include_directories(./include)
+<<<<<<< HEAD
 include_directories(./MIPP)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0")
@@ -23,6 +24,15 @@ SET(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 find_package(OpenCV  REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
+=======
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0")
+#SET(OpenCV_DIR /usr/local/opencv-3.1.0/share/OpenCV)
+set(CMAKE_CXX_STANDARD 11)
+
+find_package(OpenCV  REQUIRED)
+
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
 AUX_SOURCE_DIRECTORY(./src Detection_SRCS)
 ADD_LIBRARY(Detection ${Detection_SRCS})
 

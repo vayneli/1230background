@@ -19,7 +19,13 @@
 //协议
 
 typedef enum:unsigned char {
+<<<<<<< HEAD
     CMD_SWITCH_MESSAGE_UPDATE = 0xaa
+=======
+    CMD_PID_UPDATE = 0xa0,
+    CMD_PID_SAVE = 0xa1,
+    CMD_REGET_FLIGHT_CONTROL = 0xa2
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
     
 } RadioPortCMD;
 

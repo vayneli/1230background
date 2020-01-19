@@ -116,7 +116,11 @@ float RadioPacket::getFloatInBuffer32(int locationInBuffer){
 //数据帧解析，包含数据帧检查
 int RadioPacket::unPacking(){
     //检查帧头，帧尾
+<<<<<<< HEAD
    //printf("%x",buffer[0]);
+=======
+   printf("%x",buffer[0]);
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
     if(buffer[0]==0xff&&buffer[mLen-1]==0x0d){
         mCMD=buffer[1];//解析得到命令
         mInitflag=true;

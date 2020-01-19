@@ -16,10 +16,14 @@ BaseThread::BaseThread()
     tid = 0;  
     threadStatus = THREAD_STATUS_NEW;  
 }  
+<<<<<<< HEAD
  
 void BaseThread::closeth(){
     exist = false;
 }
+=======
+  
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
 bool BaseThread::start()  
 {  
     int iRet = 0;  
@@ -39,8 +43,12 @@ int BaseThread::getState()
 void BaseThread::join()  
 {  
     if (tid > 0)  
+<<<<<<< HEAD
     {
 	closeth();  
+=======
+    {  
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
         pthread_join(tid, NULL);  
     }  
 }  

@@ -23,7 +23,10 @@ typedef enum :unsigned char {
     ROBOT_MODE_EMPTY = 0x00,
     ROBOT_MODE_TRACKBALL=0x01,
     ROBOT_MODE_RETURN=0x02,
+<<<<<<< HEAD
     ROBOT_MODE_WAITING = 0x03,
+=======
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
     ROBOT_MODE_AUTO_TAKEOFF = 0xa0
     
 } RobotMode;
@@ -73,7 +76,11 @@ public://机器人具体数据读写函数接口
     void DataUpdate(SerialPacket recv_packet);
     void PIDUpdate(float Kp,float Ki, float Kd);
     Point3f getPIDParam();
+<<<<<<< HEAD
    void release(); 
+=======
+    
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
     /**************用户接口****************/
     Point3f getCurrentVelocity();
     Point3f getCurrentAngle();

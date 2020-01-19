@@ -6,7 +6,10 @@
 #include "pid.h"
 #include "errorAdder.h"
 #include "basic_tool.h"
+<<<<<<< HEAD
 #include"findballon.h"
+=======
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
 class ControlModel{
 public:
     ControlModel();
@@ -27,7 +30,10 @@ private:
     RealsenseInterface* cap;
     SerialInterface* interface;
     RadioInterface* radio;
+<<<<<<< HEAD
     Findballon findball;
+=======
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
     Point3f PID;
     VideoWriter writer_color,writer_depth;
     Aim_ball ball_aim;
@@ -40,6 +46,7 @@ private:
     Mat measurement = Mat::zeros(2, 1, CV_32F); 
     int count = 0;
     bool is_predict;
+<<<<<<< HEAD
     float distance = 4;
     float ball_distance = 2.5;
     float drone_distance = 4;
@@ -76,6 +83,14 @@ private:
     bool second_time_tracking = false;
     bool add_speed_up = false;
     
+=======
+private:
+    RobotModel* pRobotModel;
+    BasicTool basic_tool_;
+    //相关临时变量
+private:
+
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
 };
 
 #endif //RMDEMO_CONTROL_MODEL_H

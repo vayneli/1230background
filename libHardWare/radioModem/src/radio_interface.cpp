@@ -43,7 +43,11 @@ int RadioInterface::dataRecv(RadioPacket &recvPacket){
     //std::cout<<mMcuSerialPort.Recv(recvPacket.buffer,16)<<std::endl;
     if(mMcuSerialPort.Recv(recvPacket.buffer,16)==16) {
         if(recvPacket.unPacking()==0){
+<<<<<<< HEAD
 	//	std::cout<<"ok!"<<std::endl;
+=======
+		std::cout<<"ok!"<<std::endl;
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
             return 0;
         }
     }

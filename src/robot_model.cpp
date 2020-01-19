@@ -26,10 +26,14 @@ RobotModel::RobotModel() {
 RobotModel::~RobotModel() {
 
 }
+<<<<<<< HEAD
 void RobotModel::release(){
 	mRealsense.join();
 	mSetup->~LinuxSetup();
 }
+=======
+
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
 int RobotModel::init(LinuxSetup* setup){
     mSetup = setup;
     string serialPath,videoPath;
@@ -48,9 +52,15 @@ int RobotModel::init(LinuxSetup* setup){
     //f.release();
     //初始化串口
     
+<<<<<<< HEAD
    if(mRadio.init("/dev/ttyUSB0")==0){
        cout<<"[robot model init ]: RobotRadioInterface init successed!"<<endl;
     }
+=======
+//    if(mRadio.init("/dev/ttyUSB0")==0){
+  //      cout<<"[robot model init ]: RobotRadioInterface init successed!"<<endl;
+   // }
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
     if(mSerialInterface.init(mSetup)==0) {
         cout<<"[robot model init ]: RobotSerialInterface init successed!"<<endl;
         //mSerialPort.ShowParam();

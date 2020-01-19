@@ -9,6 +9,7 @@ using namespace cv;
 struct CAMERA_INRINSIC_PARAMETERS{
     double cx,cy,fx,fy,scale;
 };
+<<<<<<< HEAD
 
 typedef enum:unsigned char {
     RESULT_ONLY_BALL = 0xa0,
@@ -24,12 +25,15 @@ typedef enum:unsigned char {
     TRACKING_NONE = 0xb3
 } TRACKINGTARGET;
 
+=======
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
 class Aim_ball{
     public:
         Aim_ball();
         ~Aim_ball();
     public:  
         Mat setImage(Mat depth);
+<<<<<<< HEAD
         Mat segmentInRange(Mat depth,int min, int max);
         bool contoursFinder_distance(Mat src,Mat depth,vector<vector<Point> > &contours,Point3f &point,int &count);//使用最近距离优先挑选
         bool contoursFinder_area(Mat src,Mat depth,vector<vector<Point> > &contours,Point3f &point,int &count);//使用最大面积优先挑选
@@ -49,5 +53,13 @@ class Aim_ball{
         vector<Point> ball_contours;
         Point3d drone = Point3d(-1,-1,-1);
         Point3d ball = Point3d(-1,-1,-1);
+=======
+        bool findTarget(Mat &src, Mat &depth, Point3f &point);
+	Point3f getC_xyz(Point3f& point_p,CAMERA_INRINSIC_PARAMETERS& camera);
+    private:
+        Mat src;
+        Mat roi_image;
+
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
 };
 #endif

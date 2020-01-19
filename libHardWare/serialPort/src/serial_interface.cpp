@@ -241,12 +241,17 @@ bool SerialInterface::Takeoff( int timeout)
     subscribeStatus = mVehicle->subscribe->verify(timeout);
     if (ACK::getError(subscribeStatus) != ACK::SUCCESS)
     {
+<<<<<<< HEAD
 	    std::cout<<"error"<<std::endl;
       subscribeStatus = mVehicle->subscribe->verify(timeout);
       if (ACK::getError(subscribeStatus) != ACK::SUCCESS){
       	ACK::getErrorCodeMessage(subscribeStatus, func);
       	return false;
       }
+=======
+      ACK::getErrorCodeMessage(subscribeStatus, func);
+      return false;
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
     }
     
     // Telemetry: Subscribe to flight status and mode at freq 10 Hz
@@ -266,17 +271,23 @@ bool SerialInterface::Takeoff( int timeout)
     subscribeStatus = mVehicle->subscribe->startPackage(pkgIndex, timeout);
     if (ACK::getError(subscribeStatus) != ACK::SUCCESS)
     {
+<<<<<<< HEAD
 	    std::cout<<"errorlll"<<std::endl;
 	    subscribeStatus = mVehicle->subscribe->startPackage(pkgIndex, timeout);
 if (ACK::getError(subscribeStatus) != ACK::SUCCESS)
     {
 
+=======
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
       ACK::getErrorCodeMessage(subscribeStatus, func);
       // Cleanup before return
       mVehicle->subscribe->removePackage(pkgIndex, timeout);
       return false;
     }
+<<<<<<< HEAD
     }
+=======
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
   }
   
   // Start takeoff
@@ -284,6 +295,7 @@ if (ACK::getError(subscribeStatus) != ACK::SUCCESS)
   
   if (ACK::getError(takeoffStatus) != ACK::SUCCESS)
   {
+<<<<<<< HEAD
 	  std::cout<<"kkk"<<std::endl;
 	  ACK::ErrorCode takeoffStatus = mVehicle->control->takeoff(timeout);
       if (ACK::getError(takeoffStatus) != ACK::SUCCESS)
@@ -293,6 +305,11 @@ if (ACK::getError(subscribeStatus) != ACK::SUCCESS)
     return false;
   }
   }
+=======
+    ACK::getErrorCodeMessage(takeoffStatus, func);
+    return false;
+  }
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
 
   // First check: Motors started
   int motorsNotStarted = 0;
@@ -730,7 +747,11 @@ bool SerialInterface::moveByPositionOffset_block( float xOffsetDesired,
   // the
   // mission
   int responseTimeout              = 1;
+<<<<<<< HEAD
   int timeoutInMilSec              = 2000;
+=======
+  int timeoutInMilSec              = 10000;
+>>>>>>> a88152f030b171abaf6569558d0fbd9e4dbf4ea0
   int controlFreqInHz              = 50; // Hz
   int cycleTimeInMs                = 1000 / controlFreqInHz;
   int outOfControlBoundsTimeLimit  = 10 * cycleTimeInMs; // 10 cycles
