@@ -29,7 +29,7 @@
 
 #include "dji_vehicle.hpp"
 #include <new>
-#include<iostream>
+
 using namespace DJI;
 using namespace DJI::OSDK;
 

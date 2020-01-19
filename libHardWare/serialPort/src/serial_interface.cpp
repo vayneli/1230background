@@ -8,8 +8,9 @@ SerialInterface::~SerialInterface() {
 
 };
 
-int SerialInterface::init(Vehicle* vehicle){
-    mVehicle = vehicle;
+int SerialInterface::init(LinuxSetup* setup){
+  mVehicle= setup->getVehicle();
+    
     mVehicle->obtainCtrlAuthority(1);
     if(mVehicle==NULL){
         return -1;
@@ -17,6 +18,8 @@ int SerialInterface::init(Vehicle* vehicle){
         return 0;
     }
 }
+
+
 
 int SerialInterface::dataRecv(SerialPacket &recvPacket){
     int responseTimeout=1;
@@ -238,8 +241,12 @@ bool SerialInterface::Takeoff( int timeout)
     subscribeStatus = mVehicle->subscribe->verify(timeout);
     if (ACK::getError(subscribeStatus) != ACK::SUCCESS)
     {
-      ACK::getErrorCodeMessage(subscribeStatus, func);
-      return false;
+	    std::cout<<"error"<<std::endl;
+      subscribeStatus = mVehicle->subscribe->verify(timeout);
+      if (ACK::getError(subscribeStatus) != ACK::SUCCESS){
+      	ACK::getErrorCodeMessage(subscribeStatus, func);
+      	return false;
+      }
     }
     
     // Telemetry: Subscribe to flight status and mode at freq 10 Hz
@@ -259,10 +266,16 @@ bool SerialInterface::Takeoff( int timeout)
     subscribeStatus = mVehicle->subscribe->startPackage(pkgIndex, timeout);
     if (ACK::getError(subscribeStatus) != ACK::SUCCESS)
     {
+	    std::cout<<"errorlll"<<std::endl;
+	    subscribeStatus = mVehicle->subscribe->startPackage(pkgIndex, timeout);
+if (ACK::getError(subscribeStatus) != ACK::SUCCESS)
+    {
+
       ACK::getErrorCodeMessage(subscribeStatus, func);
       // Cleanup before return
       mVehicle->subscribe->removePackage(pkgIndex, timeout);
       return false;
+    }
     }
   }
   
@@ -271,8 +284,14 @@ bool SerialInterface::Takeoff( int timeout)
   
   if (ACK::getError(takeoffStatus) != ACK::SUCCESS)
   {
+	  std::cout<<"kkk"<<std::endl;
+	  ACK::ErrorCode takeoffStatus = mVehicle->control->takeoff(timeout);
+      if (ACK::getError(takeoffStatus) != ACK::SUCCESS)
+  {
+
     ACK::getErrorCodeMessage(takeoffStatus, func);
     return false;
+  }
   }
 
   // First check: Motors started
@@ -446,7 +465,7 @@ bool SerialInterface::Takeoff( int timeout)
       currentHeight = mVehicle->broadcast->getGlobalPosition();
       delta         = fabs(currentHeight.altitude - deltaHeight.altitude);
       deltaHeight.altitude = currentHeight.altitude;
-    } while (delta >= 0.009);
+    } while (delta >= 0.1);
 
     std::cout << "Aircraft hovering at " << currentHeight.altitude << "m!\n";
   }
@@ -665,8 +684,43 @@ void SerialInterface::movebyVelocity(float32_t x, float32_t y,float32_t z,float3
 
 }
 
+cv::Point3f SerialInterface::getVelocity(){
+
+	  Vector3f vel = mVehicle->broadcast->getVelocity();
+    cv::Point3f ve;
+    ve.x = vel.x;
+    ve.y = vel.y;
+    ve.z = vel.z;
+	    return ve;
+}
 
 
+void SerialInterface::moveByBodyVelocity(float32_t Vx, float32_t Vy, float32_t Vz, float32_t yawRate)
+{
+  // 将速度控制由大地坐标系转变为机身坐标系
+  Telemetry::Quaternion broadcastQ;
+  broadcastQ = mVehicle->broadcast->getQuaternion();
+  double yawInRad  = basictool.toEulerAngle(broadcastQ).z;
+  //std::cout << "yaw: " << yawInRad << std::endl;
+  float speed_x = Vx*cos(yawInRad) - Vy*sin(yawInRad);
+  float speed_y = Vy*cos(yawInRad) + Vx*sin(yawInRad);
+  mVehicle->control->velocityAndYawRateCtrl(speed_x, speed_y, Vz, yawRate);
+
+}
+
+void SerialInterface::moveByBodyPosition(float32_t x, float32_t y,float32_t z,float32_t Yaw)
+{
+
+	  // 将速度控制由大地坐标系转变为机身坐标系
+	     Telemetry::Quaternion broadcastQ;
+	     broadcastQ = mVehicle->broadcast->getQuaternion();
+	     double yawInRad  = basictool.toEulerAngle(broadcastQ).z;
+   	     //std::cout << "yaw: " << yawInRad << std::endl;
+	     float position_x = x*cos(yawInRad) - y*sin(yawInRad);
+	     float position_y = y*cos(yawInRad) + x*sin(yawInRad);
+	     mVehicle->control->positionAndYawCtrl(x,y,z,yawInRad);
+	  
+	  }
 bool SerialInterface::moveByPositionOffset_block( float xOffsetDesired,
                      float yOffsetDesired, float zOffsetDesired,
                      float yawDesired, float posThresholdInM,
@@ -676,7 +730,7 @@ bool SerialInterface::moveByPositionOffset_block( float xOffsetDesired,
   // the
   // mission
   int responseTimeout              = 1;
-  int timeoutInMilSec              = 10000;
+  int timeoutInMilSec              = 2000;
   int controlFreqInHz              = 50; // Hz
   int cycleTimeInMs                = 1000 / controlFreqInHz;
   int outOfControlBoundsTimeLimit  = 10 * cycleTimeInMs; // 10 cycles
@@ -964,4 +1018,19 @@ bool SerialInterface::moveByPositionOffset_block( float xOffsetDesired,
   }
 
   return ACK::SUCCESS;
+}
+
+
+
+Telemetry::GlobalPosition SerialInterface::getGPSposition(){
+  return mVehicle->broadcast->getGlobalPosition();
+}
+
+cv::Point3d SerialInterface::getTransformedPosition(Telemetry::GlobalPosition origin, Telemetry::GlobalPosition current){
+  Telemetry::Vector3f localOffset;
+  localOffsetFromGpsOffset(mVehicle, localOffset,
+                             static_cast<void*>(&current),
+                             static_cast<void*>(&origin));
+  cv::Point3f position(localOffset.x,localOffset.y,localOffset.z);
+  return position; 
 }

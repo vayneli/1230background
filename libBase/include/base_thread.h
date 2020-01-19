@@ -23,7 +23,8 @@ private:
     //获取执行方法的指针  
     static void * thread_proxy_func(void * args);  
     //内部执行方法  
-    void* run1();  
+    void* run1(); 
+   void closeth(); 
 public:  
     //线程的状态－新建  
     static const int THREAD_STATUS_NEW = 0;  
@@ -42,7 +43,9 @@ public:
     //等待线程直至退出  
     void join();  
     //等待线程退出或者超时  
-    void join(unsigned long millisTime);  
+    void join(unsigned long millisTime); 
+protected:
+   	bool exist=true; 
 };  
 #endif
 

@@ -29,7 +29,7 @@
 
 #include "dji_control.hpp"
 #include "dji_vehicle.hpp"
-#include <iostream>
+
 using namespace DJI;
 using namespace DJI::OSDK;
 
@@ -229,19 +229,16 @@ Control::disArmMotors(VehicleCallBack callback, UserData userData)
 ACK::ErrorCode
 Control::takeoff(int wait_timeout)
 {
-  
   if (vehicle->isLegacyM600())
   {
     return this->action(FlightCommand::LegacyCMD::takeOff, wait_timeout);
   }
   else if (vehicle->isM100())
   {
-    
     return this->action(FlightCommand::LegacyCMD::takeOff, wait_timeout);
   }
   else
   {
-    
     return this->action(FlightCommand::takeOff, wait_timeout);
   }
 }

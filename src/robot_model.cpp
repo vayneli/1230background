@@ -26,19 +26,32 @@ RobotModel::RobotModel() {
 RobotModel::~RobotModel() {
 
 }
-
-int RobotModel::init(Vehicle* vehicle){
-    mRvehicle = vehicle;
+void RobotModel::release(){
+	mRealsense.join();
+	mSetup->~LinuxSetup();
+}
+int RobotModel::init(LinuxSetup* setup){
+    mSetup = setup;
     string serialPath,videoPath;
+    cv::FileStorage f("../res/parameters.yaml", cv::FileStorage::READ);
+    f["PID_P"] >> kp;
+    f["PID_I"] >> ki;
+    f["PID_D"] >> kd;
+    f.release();
+    //cout<<kp<<endl;
+    
     //配置文件 error when build in TX2
-    //cv::FileStorage f("../res/main_config.yaml", cv::FileStorage::READ);
+    //
     //f["robot_id"] >> mRobotId;//机器人id
     //f["serial_path"] >> serialPath;//机器人串口路径
     //f["capture_path"] >> videoPath;//机器人摄像头路径
     //f.release();
     //初始化串口
     
-    if(mSerialInterface.init(mRvehicle)==0) {
+   if(mRadio.init("/dev/ttyUSB0")==0){
+       cout<<"[robot model init ]: RobotRadioInterface init successed!"<<endl;
+    }
+    if(mSerialInterface.init(mSetup)==0) {
         cout<<"[robot model init ]: RobotSerialInterface init successed!"<<endl;
         //mSerialPort.ShowParam();
     } else{
@@ -46,7 +59,7 @@ int RobotModel::init(Vehicle* vehicle){
     }
     if(mRealsense.init(640,480) == 0){
         cout << "[robot model init ]:RealsenseCapture init successed!" <<endl;
-        usleep(1000000);
+        usleep(5000000);
     }
      //初始化摄像头
     // if(mUsbCapture.init("/dev/Video",1280,720)==0){
@@ -64,6 +77,10 @@ unsigned char RobotModel::getRobotId(){
     return mRobotId;
 };
 
+LinuxSetup* RobotModel::getLinuxSetup(){
+    return mSetup;
+}
+
 
 UsbCaptureWithThread* RobotModel::getpUsbCapture() {
     return &mUsbCapture;
@@ -71,6 +88,10 @@ UsbCaptureWithThread* RobotModel::getpUsbCapture() {
 
 RealsenseInterface* RobotModel::getRealsenseCpature(){
     return &mRealsense;
+}
+
+RadioInterface* RobotModel::getpRadioInterface(){
+    return &mRadio;
 }
 
 void RobotModel::setCurrentMode(RobotMode robotMode) {
@@ -85,6 +106,10 @@ RobotMode RobotModel::getCurrentMode() {
     return mCurrentMode;
 }
 
+void RobotModel::ballStateUpdate(bool is_ok){
+    is_ball_contain = is_ok;
+}
+
 
 //机器人数据接口
 void RobotModel::DataUpdate(SerialPacket recv_packet){
@@ -96,6 +121,25 @@ void RobotModel::DataUpdate(SerialPacket recv_packet){
     mVelocity = recv_packet.velocity;
     mQuaternion = recv_packet.quaternion;
     pthread_mutex_unlock(&dataMutex);
+}
+
+void RobotModel::PIDUpdate(float Kp,float Ki,float Kd){
+    
+    pthread_mutex_lock(&dataMutex);
+    kp =Kp;
+    ki = Ki;
+    kd = Kd;
+    pthread_mutex_unlock(&dataMutex);
+
+}
+Point3f RobotModel::getPIDParam(){
+    Point3f tmp;
+    pthread_mutex_lock(&dataMutex);//加锁
+    tmp.x = kp;
+    tmp.y = ki;
+    tmp.z = kd;
+    pthread_mutex_unlock(&dataMutex);
+    return tmp;
 }
 Point3f RobotModel::getCurrentVelocity(){
     Point3f tmp;
@@ -131,3 +175,29 @@ Eigen::Matrix3f RobotModel::getRotation_matrix(Point3f CurrentAngle){
     return rotation_matrix;
 }
 
+bool RobotModel::getBallState(){
+    return is_ball_contain;
+}
+
+void RobotModel::setOriginPoint(){
+    mStartPoint = mSerialInterface.getGPSposition();
+}
+
+Telemetry::GlobalPosition RobotModel::getOriginPoint(){
+    return mStartPoint;
+}
+
+void RobotModel::setLog(string mLog)
+{
+    pthread_mutex_lock(&dataMutex);
+    log = mLog;
+    pthread_mutex_unlock(&dataMutex);
+}
+
+string RobotModel::getLog()
+{
+    pthread_mutex_lock(&dataMutex);
+    string mLog = log;
+    pthread_mutex_unlock(&dataMutex);
+    return mLog;
+}

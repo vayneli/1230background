@@ -58,14 +58,16 @@ int Commands::getCommand(const char* data){
             {//命令类型的字符均为小写
                 switch (type)
                 {
-                    case 'p':
+                    case 'c':
                                               
                         begin = fuckCommandC(tmp, begin);
                         // cout << "tmp: " << tmp << endl;
                         // cout << begin << "----------------"<< endl;
                         tmp.clear();
                         break;
-                    
+
+                    case 'p':
+                        begin = fuckCommandP(tmp, begin);
                 
                     default:
                         break;
@@ -95,13 +97,13 @@ int Commands::fuckCommandC(string tmp, int begin){
             // cout << "num_c: " << num_v << endl;
             break;
         case 2:
-            control_command.pitch = stof(tmp);
+            control_command.speed_x = stof(tmp);
             break;
         case 3:
-            control_command.roll = stof(tmp);
+            control_command.speed_y = stof(tmp);
             break;
         case 4:
-            control_command.yaw = stof(tmp);
+            control_command.speed_z = stof(tmp);
             break;
         case 5:
             control_command.yaw_rate = stof(tmp);
@@ -127,4 +129,45 @@ int Commands::fuckCommandC(string tmp, int begin){
     
     return begin;
 } 
+
+
+
+//
+//pid调参的数据包格式为 #p4 kp ki kd sampleTime $
+//
+int Commands::fuckCommandP(string tmp, int begin){
+    
+    switch (begin)
+    {
+        case 1:
+           pid.num = stoi(tmp);
+            num_v = pid.num + 1;
+            // cout << "num_c: " << num_v << endl;
+            break;
+        case 2:
+            pid.kp = stof(tmp);
+            break;
+        case 3:
+            pid.ki = stof(tmp);
+            break;
+        case 4:
+            pid.kd = stof(tmp);
+            break;
+        case 5:
+            pid.SampleTime = stof(tmp);
+            break;
+        default:
+            break;
+    }
+    begin++;
+    if(begin > (num_v + 1)){
+        clearCommand();
+        return 0;
+    }
+    
+    return begin;
+} 
+
+
+
 

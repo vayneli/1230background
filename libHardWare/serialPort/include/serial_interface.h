@@ -5,7 +5,9 @@
 #include <dji_vehicle.hpp>
 #include <iostream>
 // Helpers
+#include <dji_linux_helpers.hpp>
 #include "basic_tool.h"
+#include "opencv2/opencv.hpp"
 #ifndef RMDEMO_SERIAL_INTERFACE_H
 #define RMDEMO_SERIAL_INTERFACE_H
 #define C_EARTH (double)6378137.0
@@ -32,12 +34,13 @@ public:
 private:
     Vehicle*   mVehicle;
     BasicTool basictool;
+    LinuxSetup* setup;
 public:
     /** 初始化函数
     *  @param:  std::string devPath :串口设备路径
     *  @return: int :错误号，0代表无错误，１代表发生错误。
     */
-    int init(Vehicle* vehicle);
+    int init(LinuxSetup* setup);
     //查询串口是否打开
     bool isOpen();
 
@@ -79,8 +82,20 @@ public:
                      float yOffsetDesired, float zOffsetDesired,
                      float yawDesired, float posThresholdInM,
                    float yawThresholdInDeg);
-   
 
+    void moveByBodyVelocity(float32_t Vx, float32_t Vy, float32_t Vz, float32_t yawRate);
+   /*velocity change from ground frame to body frame
+   */
+
+    void moveByBodyPosition(float32_t x, float32_t y,float32_t z,float32_t Yaw);
+    cv::Point3f getVelocity();
+     Telemetry::GlobalPosition getGPSposition();
+    //获取当前gps坐标
+
+
+
+    cv::Point3d getTransformedPosition(Telemetry::GlobalPosition origin, Telemetry::GlobalPosition current);
+    //得到经过坐标系转换的三维坐标
 };
 
 

@@ -70,7 +70,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Release")
   set(CMAKE_CXX_FLAGS_RELEASE "${COMMON_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}")
 endif ()
 
-# include (${CMAKE_CURRENT_SOURCE_DIR}/../contrib/DJIConfig.cmake)
+#include (${CMAKE_CURRENT_SOURCE_DIR}/../contrib/DJIConfig.cmake)
 
 ###########
 ## Build ##

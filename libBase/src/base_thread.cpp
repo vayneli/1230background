@@ -16,7 +16,10 @@ BaseThread::BaseThread()
     tid = 0;  
     threadStatus = THREAD_STATUS_NEW;  
 }  
-  
+ 
+void BaseThread::closeth(){
+    exist = false;
+}
 bool BaseThread::start()  
 {  
     int iRet = 0;  
@@ -36,7 +39,8 @@ int BaseThread::getState()
 void BaseThread::join()  
 {  
     if (tid > 0)  
-    {  
+    {
+	closeth();  
         pthread_join(tid, NULL);  
     }  
 }  

@@ -100,7 +100,7 @@ Point3f AC_saliency::getXY(Mat& img,Mat& depth){
         return p;
 }
 
-Point3f AC_saliency::getC_xyz(Point3f& point_p,CAMERA_INRINSIC_PARAMETERS& camera){
+Point3f AC_saliency::getC_xyz(Point3f& point_p,CAMERA_INRINSIC_PARAMETERS_A& camera){
 
     Point3f pc;
     pc.z=point_p.z/camera.scale;
